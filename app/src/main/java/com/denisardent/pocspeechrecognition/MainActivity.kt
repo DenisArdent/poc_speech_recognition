@@ -126,7 +126,10 @@ class MainActivity : ComponentActivity(), RecognitionListener {
     override fun onResult(hypothesis: String?) {
         lifecycleScope.launch {
             if (hypothesis !=null){
-                textState.emit(hypothesis)
+                val answer = hypothesis.replace("\"text\" :", "")
+                textState.update { text ->
+                    text + "\n" + answer
+                }
             }
         }
 
@@ -134,8 +137,8 @@ class MainActivity : ComponentActivity(), RecognitionListener {
 
     override fun onFinalResult(hypothesis: String?) {
         lifecycleScope.launch {
-            if (hypothesis !=null){
-                textState.emit(hypothesis)
+            textState.update {
+                " "
             }
         }
     }
@@ -196,15 +199,7 @@ class MainActivity : ComponentActivity(), RecognitionListener {
                 Text(text = "Начать транскрибацию", modifier = modifier)
             }
             if (isRecordingRunning)
-                Button(
-                    modifier = modifier,
-                    onClick = {
-
-                    },
-                    enabled = !loading
-                ){
-                    Text(text = "Остановить запись", modifier = modifier)
-                }
+                Text(text = "Запись идет")
             if (loading){
                 CircularProgressIndicator(modifier = modifier)
             }
